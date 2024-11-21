@@ -1,17 +1,18 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query"
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 
 const API_URL = 'http://localhost:8000'
 
 export const apiSlice = createApi({
-     reducerPath : 'api',
-     baseQuery: fetchBaseQuery({
+    reducerPath: 'api',
+    baseQuery: fetchBaseQuery({
         baseUrl: API_URL,
-        credentials: 'include',  // pour échanger les cookies avec les api 
+        credentials: 'include', // les cookies et info dans le headers pour l'API
         prepareHeaders: (headers) => {
 
             return headers
-        }
-     }),
-     tagTypes : ['STUDENTS', 'TEACHERS'], // 
-     endpoints: () => ({}) // on va slicer les endpoints par ressource 
+        },
+    }),
+    tagTypes: [
+        'STUDENTS', 'TEACHERS'],
+    endpoints: () => ({}),
 });
