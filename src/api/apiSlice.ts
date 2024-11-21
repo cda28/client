@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query"
 
-const API_URL = 'http://localhost:8000/api'
+const API_URL = 'http://localhost:8000'
 
 export const apiSlice = createApi({
      reducerPath : 'api',
@@ -12,6 +12,6 @@ export const apiSlice = createApi({
             return headers
         }
      }),
-     tagTypes : ['STUNDENTS', 'TEACHERS'], // 
-     endpoints: () => ({})
+     tagTypes : ['STUDENTS', 'TEACHERS'], // 
+     endpoints: () => ({}) // on va slicer les endpoints par ressource 
 });
