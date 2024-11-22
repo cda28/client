@@ -1,5 +1,4 @@
 import { useGetCoursesQuery } from './api/endpoints/courses'
-import './App.css'
 
 function App() {
   const { data, isLoading } = useGetCoursesQuery()

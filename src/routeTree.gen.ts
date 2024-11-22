@@ -8,40 +8,126 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as TeachersIndexImport } from './routes/teachers/index'
+import { Route as StudentsIndexImport } from './routes/students/index'
+import { Route as StudentsStudentIdImport } from './routes/students/student.$id'
+
+// Create Virtual Routes
+
+const IndexLazyImport = createFileRoute('/')()
 
 // Create/Update Routes
+
+const IndexLazyRoute = IndexLazyImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+
+const TeachersIndexRoute = TeachersIndexImport.update({
+  id: '/teachers/',
+  path: '/teachers/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const StudentsIndexRoute = StudentsIndexImport.update({
+  id: '/students/',
+  path: '/students/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const StudentsStudentIdRoute = StudentsStudentIdImport.update({
+  id: '/students/student/$id',
+  path: '/students/student/$id',
+  getParentRoute: () => rootRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {}
+  interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/students/': {
+      id: '/students/'
+      path: '/students'
+      fullPath: '/students'
+      preLoaderRoute: typeof StudentsIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/teachers/': {
+      id: '/teachers/'
+      path: '/teachers'
+      fullPath: '/teachers'
+      preLoaderRoute: typeof TeachersIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/students/student/$id': {
+      id: '/students/student/$id'
+      path: '/students/student/$id'
+      fullPath: '/students/student/$id'
+      preLoaderRoute: typeof StudentsStudentIdImport
+      parentRoute: typeof rootRoute
+    }
+  }
 }
 
 // Create and export the route tree
 
-export interface FileRoutesByFullPath {}
+export interface FileRoutesByFullPath {
+  '/': typeof IndexLazyRoute
+  '/students': typeof StudentsIndexRoute
+  '/teachers': typeof TeachersIndexRoute
+  '/students/student/$id': typeof StudentsStudentIdRoute
+}
 
-export interface FileRoutesByTo {}
+export interface FileRoutesByTo {
+  '/': typeof IndexLazyRoute
+  '/students': typeof StudentsIndexRoute
+  '/teachers': typeof TeachersIndexRoute
+  '/students/student/$id': typeof StudentsStudentIdRoute
+}
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
+  '/': typeof IndexLazyRoute
+  '/students/': typeof StudentsIndexRoute
+  '/teachers/': typeof TeachersIndexRoute
+  '/students/student/$id': typeof StudentsStudentIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: never
+  fullPaths: '/' | '/students' | '/teachers' | '/students/student/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: never
-  id: '__root__'
+  to: '/' | '/students' | '/teachers' | '/students/student/$id'
+  id: '__root__' | '/' | '/students/' | '/teachers/' | '/students/student/$id'
   fileRoutesById: FileRoutesById
 }
 
-export interface RootRouteChildren {}
+export interface RootRouteChildren {
+  IndexLazyRoute: typeof IndexLazyRoute
+  StudentsIndexRoute: typeof StudentsIndexRoute
+  TeachersIndexRoute: typeof TeachersIndexRoute
+  StudentsStudentIdRoute: typeof StudentsStudentIdRoute
+}
 
-const rootRouteChildren: RootRouteChildren = {}
+const rootRouteChildren: RootRouteChildren = {
+  IndexLazyRoute: IndexLazyRoute,
+  StudentsIndexRoute: StudentsIndexRoute,
+  TeachersIndexRoute: TeachersIndexRoute,
+  StudentsStudentIdRoute: StudentsStudentIdRoute,
+}
 
 export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
@@ -52,7 +138,24 @@ export const routeTree = rootRoute
   "routes": {
     "__root__": {
       "filePath": "__root.tsx",
-      "children": []
+      "children": [
+        "/",
+        "/students/",
+        "/teachers/",
+        "/students/student/$id"
+      ]
+    },
+    "/": {
+      "filePath": "index.lazy.tsx"
+    },
+    "/students/": {
+      "filePath": "students/index.tsx"
+    },
+    "/teachers/": {
+      "filePath": "teachers/index.tsx"
+    },
+    "/students/student/$id": {
+      "filePath": "students/student.$id.ts"
     }
   }
 }
